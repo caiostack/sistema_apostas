@@ -21,7 +21,7 @@ def estimar_probabilidade_vitoria(media_gols_time_a, media_gols_time_b):
 
     for gols_a in range(6):
         for gols_b in range(6):
-            prob_placar = calcular_poisson(media_gols_time_a, gols_a) * calcular_poisson(media_gols_time_b)
+            prob_placar = calcular_poisson(media_gols_time_a, gols_a) * calcular_poisson(media_gols_time_b, gols_b)
 
             if gols_a > gols_b:
                 prob_vitoria_a += prob_placar
