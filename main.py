@@ -1,4 +1,5 @@
-from modelagem import calcular_probabilidade_implicita, calcular_ev
+import json
+from modelagem import calcular_probabilidade_implicita, calcular_ev, estimar_probabilidade_vitoria
 
 def analisar_apostas(lista_de_jogos):
     resultados = []
@@ -6,15 +7,15 @@ def analisar_apostas(lista_de_jogos):
     for jogo in lista_de_jogos:
         nome = jogo["nome"]
         odd = jogo["odd"]
-        prob_real = jogo["prob_real"]
         
+        prob_real = estimar_probabilidade_vitoria(jogo["media_gols_casa"], jogo["media_gols_fora"])
         prob_implicita = calcular_probabilidade_implicita(odd)
         ev = calcular_ev(odd, prob_real)
         
-        # resultado guardados em um dicionário para fácil acesso posterior
         analise = {
             "nome": nome,
             "odd": odd,
+            "prob_real": prob_real,
             "prob_implicita": prob_implicita,
             "ev": ev,
             "tem_valor": prob_real > prob_implicita
@@ -23,16 +24,23 @@ def analisar_apostas(lista_de_jogos):
     
     return resultados
 
-# Simulação dos dados
-apostas = [
-    {"nome": "Time A vs Time B", "odd": 2.10, "prob_real": 0.55},
-    {"nome": "Time C vs Time D", "odd": 1.80, "prob_real": 0.50},
-    {"nome": "Time E vs Time F", "odd": 3.00, "prob_real": 0.40},
-]
 
-# Execução e Exibição
-meus_resultados = analisar_apostas(apostas)
+try:
+    # 1. O Python abre o arquivo JSON no modo leitura ('r' = read)
+    with open('jogos.json', 'r', encoding='utf-8') as arquivo:
+        jogos_do_dia = json.load(arquivo)
 
-for res in meus_resultados:
-    status = "VALOR" if res['tem_valor'] else "SEM VALOR"
-    print(f"[{status}] {res['nome']} | Odd: {res['odd']} | EV: R${res['ev']:.2f}")
+    # 2. Manda os dados lidos para o nosso motor de cálculos
+    meus_resultados = analisar_apostas(jogos_do_dia)
+
+    # 3. Exibe o relatório
+    print("\n--- RELATÓRIO DE APOSTAS ---")
+    for res in meus_resultados:
+        status = "VALOR" if res['tem_valor'] else "SEM VALOR"
+        print(f"{status} | {res['nome']} | Odd: {res['odd']:.2f} | Prob. Real: {res['prob_real']:.2%} | EV: R${res['ev']:.2f}")
+    print("----------------------------\n")
+
+except FileNotFoundError:
+    print("Erro: O arquivo 'jogos.json' não foi encontrado. Verifique se ele está na mesma pasta.")
+except json.JSONDecodeError:
+    print("Erro: O arquivo 'jogos.json' está formatado incorretamente.")

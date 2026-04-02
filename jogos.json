@@ -1,0 +1,20 @@
+[
+    {
+        "nome": "Flamengo vs Palmeiras", 
+        "odd": 2.10, 
+        "media_gols_casa": 1.8, 
+        "media_gols_fora": 1.2
+    },
+    {
+        "nome": "Real Madrid vs Barcelona", 
+        "odd": 1.80, 
+        "media_gols_casa": 2.1, 
+        "media_gols_fora": 1.6
+    },
+    {
+        "nome": "Arsenal vs Bayern de Munique", 
+        "odd": 3.00, 
+        "media_gols_casa": 1.5, 
+        "media_gols_fora": 2.2
+    }
+]
